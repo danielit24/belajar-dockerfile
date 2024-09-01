@@ -18,14 +18,7 @@ Run the Redis container with the following command, which sets the Redis passwor
 ```bash
 docker run --name redis-container -d -p 6379:6379 -v ./data:/data redis-custom-image redis-server --requirepass docker_password --dir /data
 ```
-In this command:
-
-## Tech Stack
-
-**Client:** React, Redux, TailwindCSS
-
-**Server:** Node, Express
-
+## In this command:
 
 **--name redis-container** names the container.
 
