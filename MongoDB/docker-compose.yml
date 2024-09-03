@@ -1,0 +1,57 @@
+version: '3.8'
+services:
+  mongo1:
+    image: mongo:latest
+    container_name: mongo1
+    ports:
+      - 27017:27017
+    networks:
+      - mongo-cluster
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./init-database.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    command: ["mongod", "--replSet", "rs0"]
+
+  mongo2:
+    image: mongo:latest
+    container_name: mongo2
+    ports:
+      - 27018:27017
+    networks:
+      - mongo-cluster
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./init-database.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    command: ["mongod", "--replSet", "rs0"]
+
+  mongo3:
+    image: mongo:latest
+    container_name: mongo3
+    ports:
+      - 27019:27017
+    networks:
+      - mongo-cluster
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./init-database.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    command: ["mongod", "--replSet", "rs0"]
+
+  mongo-setup:
+    image: mongo:latest
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+    networks:
+      - mongo-cluster
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./init-database.js:/docker-entrypoint-initdb.d/init-database.js:ro
+    entrypoint: [
+      "sh", "-c",
+      "sleep 20 && mongosh --host mongo1:27017 /docker-entrypoint-initdb.d/init-mongo.js"
+    ]
+
+networks:
+  mongo-cluster:
+    driver: bridge
